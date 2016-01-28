@@ -58,6 +58,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RefactoringModel\RefactoringModel.csproj">
+      <Project>{5f3e7d64-8378-4159-9d80-20bcd56dc354}</Project>
+      <Name>RefactoringModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RefactoringServiceInterface\RefactoringServiceInterface.csproj">
+      <Project>{53976cc9-63eb-4c4a-8376-b9dc0cf99c55}</Project>
+      <Name>RefactoringServiceInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RefactoringServices\RefactoringServices.csproj">
+      <Project>{1c1967cb-292d-4d51-8dd8-73c75b24f2fa}</Project>
+      <Name>RefactoringServices</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Refactoring\Refactoring.csproj">
       <Project>{2d3f5d0e-4a6b-44c0-8f63-8e95243ac028}</Project>
       <Name>Refactoring</Name>
