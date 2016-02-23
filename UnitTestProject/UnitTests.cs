@@ -1,46 +1,41 @@
-﻿using Newtonsoft.Json;
-using NUnit.Framework;
-using Refactoring;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-
-namespace UnitTestProject
+﻿namespace UnitTestProject
 {
+    using NUnit.Framework;
+    using Refactoring;
+    using RefactoringServiceInterface;
+    using RefactoringServices;
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.Serialization.Formatters.Binary;
+
     [TestFixture]
     public class UnitTests
     {
-        private List<User> users;
-        private List<User> originalUsers;
-        private List<Product> products;
-        private List<Product> originalProducts;
+        private IUserRepository users;
+        private IUserRepository originalUsers;
+        private IProductRepository products;
+        private IProductRepository originalProducts;
 
         [SetUp]
         public void Test_Initialize()
         {
             // Load users from data file
-            originalUsers = JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(@"Data/Users.json"));
-            users = DeepCopy<List<User>>(originalUsers);
+            originalUsers = new UserRepository(@"Data\Users.json");
+            users = new UserRepository(@"Data\Users.json");
 
-            // Load products from data file
-            originalProducts = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(@"Data/Products.json"));
-            products = DeepCopy<List<Product>>(originalProducts);
+            originalProducts = new ProductRepository(@"Data\Products.json");
+            products = new ProductRepository(@"Data\Products.json");
         }
 
         [TearDown]
         public void Test_Cleanup()
         {
-            // Restore users
-            string json = JsonConvert.SerializeObject(originalUsers, Formatting.Indented);
-            File.WriteAllText(@"Data/Users.json", json);
-            users = DeepCopy<List<User>>(originalUsers);
+            originalUsers.SaveChanges();
+            users = new UserRepository(@"Data\Users.json");
 
-            // Restore products
-            string json2 = JsonConvert.SerializeObject(originalProducts, Formatting.Indented);
-            File.WriteAllText(@"Data/Products.json", json2);
-            products = DeepCopy<List<Product>>(originalProducts);
+            originalProducts.SaveChanges();
+            products = new ProductRepository(@"Data\Products.json");
         }
 
         [Test]
@@ -70,7 +65,8 @@ namespace UnitTestProject
                 {
                     Console.SetIn(reader);
 
-                    Tusc.Start(users, products);
+                    Tusc tusc = new Tusc(users, products);
+                    tusc.Start();
                 }
             }
         }
@@ -86,7 +82,8 @@ namespace UnitTestProject
                 {
                     Console.SetIn(reader);
 
-                    Tusc.Start(users, products);
+                    Tusc tusc = new Tusc(users, products);
+                    tusc.Start();
                 }
 
                 Assert.IsTrue(writer.ToString().Contains("You entered an invalid user"));
@@ -104,7 +101,8 @@ namespace UnitTestProject
                 {
                     Console.SetIn(reader);
 
-                    Tusc.Start(users, products);
+                    Tusc tusc = new Tusc(users, products);
+                    tusc.Start();
                 }
             }
         }
@@ -120,7 +118,8 @@ namespace UnitTestProject
                 {
                     Console.SetIn(reader);
 
-                    Tusc.Start(users, products);
+                    Tusc tusc = new Tusc(users, products);
+                    tusc.Start();
                 }
 
                 Assert.IsTrue(writer.ToString().Contains("You entered an invalid password"));
@@ -138,7 +137,8 @@ namespace UnitTestProject
                 {
                     Console.SetIn(reader);
 
-                    Tusc.Start(users, products);
+                    Tusc tusc = new Tusc(users, products);
+                    tusc.Start();
                 }
 
                 Assert.IsTrue(writer.ToString().Contains("Purchase cancelled"));
@@ -149,9 +149,7 @@ namespace UnitTestProject
         [Test]
         public void Test_ErrorOccursWhenBalanceLessThanPrice()
         {
-            // Update data file
-            List<User> tempUsers = DeepCopy<List<User>>(originalUsers);
-            tempUsers.Where(u => u.Name == "Jason").Single().Bal = 0.0;
+            users.GetAllUsers().Where(u => u.Name == "Jason").Single().Balance = 0.0;
 
             using (var writer = new StringWriter())
             {
@@ -161,7 +159,8 @@ namespace UnitTestProject
                 {
                     Console.SetIn(reader);
 
-                    Tusc.Start(tempUsers, products);
+                    Tusc tusc = new Tusc(users, products);
+                    tusc.Start();
                 }
 
                 Assert.IsTrue(writer.ToString().Contains("You do not have enough money to buy that"));
@@ -171,9 +170,7 @@ namespace UnitTestProject
         [Test]
         public void Test_ErrorOccursWhenProductOutOfStock()
         {
-            // Update data file
-            List<Product> tempProducts = DeepCopy<List<Product>>(originalProducts);
-            tempProducts.Where(u => u.Name == "Chips").Single().Qty = 0;
+            products.GetAllProducts().Where(u => u.Name == "Chips").Single().Quantity = 0;
 
             using (var writer = new StringWriter())
             {
@@ -183,7 +180,8 @@ namespace UnitTestProject
                 {
                     Console.SetIn(reader);
 
-                    Tusc.Start(users, tempProducts);
+                    Tusc tusc = new Tusc(users, products);
+                    tusc.Start();
                 }
 
                 Assert.IsTrue(writer.ToString().Contains("is out of stock"));
