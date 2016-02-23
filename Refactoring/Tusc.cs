@@ -171,7 +171,7 @@
 
         private bool IsValidPassword(User user, string pwd)
         {
-            return user.Password == pwd;
+            return user.Password.Equals(pwd);
         }
 
         private static void ShowWelcomeMessage()
