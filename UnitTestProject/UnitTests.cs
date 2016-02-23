@@ -21,21 +21,21 @@
         public void Test_Initialize()
         {
             // Load users from data file
-            originalUsers = new UserRepository(@"Data\Users.json");
-            users = new UserRepository(@"Data\Users.json");
+            originalUsers = new UserRepository(@"Data/Users.json");
+            users = new UserRepository(@"Data/Users.json");
 
-            originalProducts = new ProductRepository(@"Data\Products.json");
-            products = new ProductRepository(@"Data\Products.json");
+            originalProducts = new ProductRepository(@"Data/Products.json");
+            products = new ProductRepository(@"Data/Products.json");
         }
 
         [TearDown]
         public void Test_Cleanup()
         {
             originalUsers.SaveChanges();
-            users = new UserRepository(@"Data\Users.json");
+            users = new UserRepository(@"Data/Users.json");
 
             originalProducts.SaveChanges();
-            products = new ProductRepository(@"Data\Products.json");
+            products = new ProductRepository(@"Data/Products.json");
         }
 
         [Test]

@@ -7,8 +7,8 @@
     {
         public static void Main(string[] args)
         {
-            IUserRepository userRepository = new UserRepository(@"Data\Users.json");
-            IProductRepository productRepository = new ProductRepository(@"Data\Products.json");
+            IUserRepository userRepository = new UserRepository(@"Data/Users.json");
+            IProductRepository productRepository = new ProductRepository(@"Data/Products.json");
             
             Tusc tusc = new Tusc(userRepository, productRepository);
             tusc.Start();
