@@ -9,7 +9,7 @@
     {
         private IUserRepository UserRepository { get; set; }
         private IProductRepository ProductRepository { get; set; }
-        
+
         public Tusc(IUserRepository userRepository, IProductRepository productRepository)
         {
             UserRepository = userRepository;
@@ -57,7 +57,7 @@
                                 int quantity = PromptForQuantity();
                                 var totalPrice = productMenu.SelectedProduct.Price * quantity;
 
-                                if (loginMenu.User.Balance -  totalPrice < 0)
+                                if (loginMenu.User.Balance - totalPrice < 0)
                                 {
                                     ShowNotEnoughMoneyMessage();
                                     continue;
